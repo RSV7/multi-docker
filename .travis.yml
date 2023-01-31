@@ -1,0 +1,16 @@
+language: generic 
+sudo: required
+services:
+ - docker
+
+before_install:
+  - docker build -f rsv7/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true rsv7/react-test npm test
+
+after_success:
+ - docker build -t rsv7/multi-client ./client
+ - docker build -t rsv7/multi-nginx ./nginx
+ - docker build -t rsv7/multi-server ./server
+ - docker build -t rsv7/multi-worker ./worker
